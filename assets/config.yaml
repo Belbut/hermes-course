@@ -1,0 +1,46 @@
+# ~/.hermes/config.yaml
+# MCP servers block. Start read-only, prove it, then widen (the start-safe ladder).
+# Tools register as mcp_<server>_<tool>, e.g. mcp_filesystem_read_file.
+# Secrets go in ~/.hermes/.env — never here.
+
+mcp_servers:
+
+  # --- Rung 1: read-only ---------------------------------------------------
+  filesystem:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "/Users/you/projects"          # scope it to one tree, not $HOME
+    tools:
+      include:                          # allow-list = security control
+        - read_file
+        - list_directory
+        - search_files
+
+  fetch:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-fetch"]
+
+  # --- Rung 3: reversible writes (enable after the read-only pass is clean) -
+  # filesystem_rw:
+  #   command: npx
+  #   args: ["-y", "@modelcontextprotocol/server-filesystem", "/Users/you/projects/scratch"]
+  #   tools:
+  #     include: [read_file, write_file, list_directory]
+
+  # --- Remote HTTP server with auth ----------------------------------------
+  # internal_api:
+  #   url: https://mcp.internal.example.com/sse
+  #   auth: oauth
+  #   tools:
+  #     include: [search_tickets]
+
+# Sessions on messaging platforms never auto-reset unless you opt in:
+# session_reset:
+#   enabled: false
+
+# Sandbox untrusted code. NOTE: container backends SKIP the dangerous-command
+# check — the image is the security boundary. Set these in ~/.hermes/.env:
+#   TERMINAL_ENV=docker
+#   TERMINAL_DOCKER_IMAGE=python:3.13-slim
