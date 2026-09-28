@@ -146,7 +146,8 @@ full comparison and the one-line rule for picking are in the
 ## Q&A you should expect
 
 **"Isn't this just Claude Code with extra steps?"**
-Partly yes, and we'll settle it properly in Lesson 5 with a five-rung ladder.
+Partly yes, and we'll settle it properly in
+[Lesson 3](03-memory-and-skills.md#35-the-objection-answered-the-self-improvement-ladder) with a five-rung ladder.
 Short version: same capability class, different default posture toward
 persistence, plus you own the model.
 

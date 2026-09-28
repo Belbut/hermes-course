@@ -213,6 +213,9 @@ session on the other model over bouncing back and forth mid-conversation.**
 
 Hermes checks every command against a curated dangerous-pattern list before
 running it. Approval tiers: once / session / always / deny. Start at **session**.
+Under the default `approvals.mode: smart`, only uncertain commands reach the
+prompt: an auxiliary model auto-approves low-risk and auto-denies clearly
+dangerous ones.
 
 > **Container backends (Docker, Singularity, Modal, Daytona, Vercel Sandbox)
 > SKIP the dangerous-command check.** The container *is* the security boundary. This is a

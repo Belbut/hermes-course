@@ -41,6 +41,7 @@ Choose **Custom endpoint** and give it a base URL + API key.
 ```bash
 # llama.cpp — lower latency
 brew install llama.cpp
+# 8 GB Mac: -c 65536
 llama-server -m qwen3.5-9b-q4.gguf \
   -c 131072 --cache-type-k q4_0 --cache-type-v q4_0 --port 8080
 # → endpoint http://localhost:8080/v1
