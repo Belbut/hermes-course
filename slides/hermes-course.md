@@ -147,6 +147,18 @@ Nous ships a first-class `--tool-call-parser hermes` for vLLM.
 
 ---
 
+## The landscape, one line each
+
+<div class="bento">
+<div class="cell wide"><h3>Hermes</h3><p>Persistent workflows, learns from work, one agent across CLI <em>and</em> messaging.</p></div>
+<div class="cell"><h3>Claude Code + Ollama</h3><p>Deep IDE integration, mature tooling, focused sessions.</p></div>
+<div class="cell"><h3>OpenClaw</h3><p>Lightest setup, pure CLI coding.</p></div>
+</div>
+
+**The rule:** pick Hermes when the accumulated context is the point; pick a stateless coding agent when each session is disposable.
+
+---
+
 <!-- _class: lead dark -->
 
 <div class="kicker">Block 2 · Hands-on</div>
