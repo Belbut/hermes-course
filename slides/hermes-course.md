@@ -4,6 +4,21 @@ theme: automata
 paginate: true
 ---
 
+<style>
+/* Dark slides: readable tables, inline code and syntax highlighting */
+section.dark td { background: #2a1b18; color: #F0E6D8; border-color: #3a2522; }
+section.dark tr:nth-child(even) td { background: #301f1b; }
+section.dark th { border-color: #3a2522; }
+section.dark strong, section.dark em { color: #E07A6B; }
+section.dark :not(pre) > code { background: #3a2522; color: #F0E6D8; }
+section.dark pre .hljs-string { color: #E8B4A0; }
+section.dark pre .hljs-number, section.dark pre .hljs-literal { color: #F2C57C; }
+section.dark pre .hljs-keyword, section.dark pre .hljs-built_in, section.dark pre .hljs-section { color: #E07A6B; }
+section.dark pre .hljs-comment { color: #9C8A80; font-style: italic; }
+section.dark pre .hljs-attr, section.dark pre .hljs-variable, section.dark pre .hljs-title,
+section.dark pre .hljs-meta, section.dark pre .hljs-bullet, section.dark pre .hljs-code { color: #F0E6D8; }
+</style>
+
 <!-- _class: lead dark -->
 <!-- _paginate: false -->
 
@@ -46,15 +61,13 @@ No installs yet. Mental map first.
 
 ---
 
-## Say this in the first five minutes
+## No weights change — anywhere
 
 **"Self-improves through use, not retraining" means no weights change.**
 
 * Not in Hermes. Not in Claude Code. Not anywhere today.
 * "Not retraining" just means "no fine-tuning."
 * Everything here is <em>context engineering</em> — files written to disk and re-injected into a prompt.
-
-Costs you nothing. Buys you every technical person in the room.
 
 ---
 
@@ -143,7 +156,7 @@ The harness needs a **parser per family** to normalize them.
 
 Nous ships a first-class `--tool-call-parser hermes` for vLLM.
 
-> When a local model "doesn't work" with an agent, **the parser is the first suspect** — not the model's intelligence. Your students will hit this.
+> When a local model "doesn't work" with an agent, **the parser is the first suspect** — not the model's intelligence.
 
 ---
 
@@ -208,7 +221,7 @@ hermes --tui
 
 * The official Mac guide points at **llama.cpp** (lower latency, `:8080`) or **omlx/MLX** (higher throughput, `:8000`) behind a Custom endpoint.
 * Ollama works (`OLLAMA_API_KEY`) — it just isn't the doc's Mac path.
-* **Pick one for the live demo and say which.** Mixing them mid-class produces unreproducible failures.
+* **Pick one server and stick with it.** Mixing them mid-session produces unreproducible failures.
 
 **Claude Code contrast:** you never pick a model *server*, only a model name. Here you own the whole inference stack.
 
@@ -285,7 +298,7 @@ FastAPI service, Postgres, on Fly. Entry point: `app/main.py`.
 
 ---
 
-## The cost note that surprises this audience
+## Context files and the prompt cache
 
 Context files are part of the **stable system prompt** — which is what earns prompt-cache hits.
 
@@ -344,7 +357,7 @@ Same instinct as Claude Code: dictate the goal, not the path.
 
 ---
 
-## CLI power-use — worth 90 seconds
+## CLI power-use
 
 | Key / command | Does |
 |---|---|
@@ -358,8 +371,6 @@ Same instinct as Claude Code: dictate the goal, not the path.
 ---
 
 ## The 60-second eval habit
-
-**The part every other Hermes tutorial skips — and the one that makes the rest defensible.**
 
 * You cannot tell whether a local model is good enough by vibes.
 * "The answer felt right" is not a signal.
@@ -385,6 +396,8 @@ Score two columns only: **right tool?** and **right arguments?**
 ---
 
 ## What the eval set buys you
+
+<style scoped>.stat-grid{margin-bottom:48px}</style>
 
 <div class="stat-grid">
 <div class="stat"><div class="num">1</div><div class="label">A go / no-go on a local model — below ~80% you'll blame the wrong layer</div></div>
@@ -695,7 +708,7 @@ WHATSAPP_ALLOWED_USERS=+15551234567
 chmod 700 ~/.hermes/whatsapp-session   # these are live credentials
 ```
 
-Via Baileys — no Meta dev account. Mention the ban risk honestly.
+Via Baileys — no Meta dev account. Unofficial client: WhatsApp can ban the number.
 
 ---
 
