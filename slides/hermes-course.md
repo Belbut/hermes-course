@@ -285,6 +285,16 @@ FastAPI service, Postgres, on Fly. Entry point: `app/main.py`.
 
 ---
 
+## The cost note that surprises this audience
+
+Context files are part of the **stable system prompt** — which is what earns prompt-cache hits.
+
+* Editing them mid-session **breaks the cache**. You pay a full re-read.
+* Write them once, deliberately, at session start.
+* Every character costs on <em>every turn</em>.
+
+---
+
 ## Turn on tools in blast-radius order
 
 <div class="timeline">
@@ -321,6 +331,16 @@ Summarize this repo in 5 bullets and name the main entrypoint.
 * Watch tool calls land against your <em>local</em> model.
 * Point at where the per-model parser normalizes the format.
 * **Failures are the lesson.** Don't edit them out.
+
+---
+
+## Prompting discipline
+
+* **Be specific.** "Fix the `TypeError` in `api/handlers.py:47`" — not "fix the code."
+* **Front-load context.** Paste the traceback. Paste the screenshot (`Ctrl+V`).
+* **Let the agent use its tools.** "Find and fix the failing test" beats dictating each step.
+
+Same instinct as Claude Code: dictate the goal, not the path.
 
 ---
 
@@ -807,6 +827,20 @@ You've hand-built most of this already. **Two things you don't get automatically
 </div>
 
 Both buildable — a hook, an SQLite index, a cron job. Which <em>is</em> the point.
+
+---
+
+## Answer the sharp question with the ladder
+
+> *"Claude Code writes files too. So what's actually different?"*
+
+1) Filesystem access → rung 1. Proves nothing.
+2) `CLAUDE.md` / `AGENTS.md` → rung 2.
+3) Claude Code's Auto Memory → rung 3.
+4) Unattended curation + search retrieval → rung 4.
+5) Skill synthesis with a retirement lifecycle → rung 5.
+
+**Hermes ships 3→5 wired together and turned on by default.** Real, checkable, and smaller than the launch copy implies.
 
 ---
 
