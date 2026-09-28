@@ -72,7 +72,7 @@ Costs you nothing. Buys you every technical person in the room.
 ## Three layers people keep collapsing
 
 <div class="flow">
-<div class="step"><h3>Model</h3><p>Qwen3.5-9B · Qwen3.6-35B-A3B · Hermes 4<br><em>swappable</em></p></div>
+<div class="step"><h3>Model</h3><p>Qwen3.5-9B · Qwen3.6-35B-A3B · Hermes 4.3 36B<br><em>swappable</em></p></div>
 <div class="arrow">↑</div>
 <div class="step"><h3>Harness</h3><p>Hermes · Claude Code · OpenClaw<br><em>loop, tools, safety</em></p></div>
 <div class="arrow">↑</div>
@@ -101,7 +101,7 @@ The vocabulary maps ~1:1. What differs is what runs **by default and unattended*
 
 | Purpose | Hermes | Claude Code |
 |---|---|---|
-| Project instructions | `AGENTS.md` (repo root) | `CLAUDE.md` (repo root) |
+| Project instructions | `AGENTS.md` (repo root) | `CLAUDE.md` or the same `AGENTS.md` |
 | Global personality | `SOUL.md` (`~/.hermes/`) | `~/.claude/CLAUDE.md` |
 | Learned facts | `MEMORY.md`, `USER.md` | Auto Memory |
 | Procedures | `~/.hermes/skills/*/SKILL.md` | `~/.claude/skills/*/SKILL.md` |
@@ -127,9 +127,9 @@ A model that writes beautiful prose and mangles a JSON tool call is <em>useless 
 
 | Model | RAM | Where it fits |
 |---|---|---|
-| **Qwen3.5-9B** | 8 GB+ | Official Mac starter pick, quantized |
+| **Qwen3.5-9B** | 8 GB+ at 64K · ~10 GB at 128K | Official Mac starter pick, quantized |
 | **Qwen3.6-35B-A3B** | 32 GB+ | Daily driver, NVIDIA-endorsed default |
-| **Hermes 4 36B** | 32 GB+ | Nous's own, tuned for tool calling |
+| **Hermes 4.3 36B** | 32 GB+ | Nous's own, tuned for tool calling |
 
 **Hard requirement regardless: the model must serve ≥64K context.**
 System prompt + context files + tool defs + a real conversation does not fit in 8K.
@@ -144,18 +144,6 @@ The harness needs a **parser per family** to normalize them.
 Nous ships a first-class `--tool-call-parser hermes` for vLLM.
 
 > When a local model "doesn't work" with an agent, **the parser is the first suspect** — not the model's intelligence. Your students will hit this.
-
----
-
-## The landscape, one line each
-
-<div class="bento">
-<div class="cell wide"><h3>Hermes</h3><p>Persistent workflows, learns from work, one agent across CLI <em>and</em> messaging.</p></div>
-<div class="cell"><h3>Claude Code + Ollama</h3><p>Deep IDE integration, mature tooling, focused sessions.</p></div>
-<div class="cell"><h3>OpenClaw</h3><p>Lightest setup, pure CLI coding.</p></div>
-</div>
-
-**The rule:** pick Hermes when the accumulated context is the point; pick a stateless coding agent when each session is disposable.
 
 ---
 
@@ -181,13 +169,7 @@ hermes --version
 
 Windows: PowerShell one-liner. Mac: also a Desktop installer.
 
----
-
-## There is no `pip install hermes-agent`
-
-* If a student finds a PyPI package by that name, **it is not this.**
-* Same shape as Claude Code — `npm i -g` or the native installer, not PyPI.
-* Correct this before the hands-on or you'll lose ten minutes to it.
+`pip install hermes-agent` exists (Nous-published) but lags the installer — use the installer.
 
 ---
 
@@ -206,7 +188,7 @@ llama-server -m qwen3.5-9b-q4.gguf \
 hermes --tui
 ```
 
-`-c 131072` + q4 KV cache is what makes 64K+ context affordable in 8 GB.
+`-c 131072` + q4 KV ≈ 10 GB — on 8 GB use `-c 65536`.
 
 ---
 
@@ -291,16 +273,6 @@ FastAPI service, Postgres, on Fly. Entry point: `app/main.py`.
 
 ---
 
-## The cost note that surprises this audience
-
-Context files are part of the **stable system prompt** — which is what earns prompt-cache hits.
-
-* Editing them mid-session **breaks the cache**. You pay a full re-read.
-* Write them once, deliberately, at session start.
-* Every character costs on <em>every turn</em>.
-
----
-
 ## Turn on tools in blast-radius order
 
 <div class="timeline">
@@ -320,6 +292,8 @@ Every command is checked against a curated dangerous-pattern list — recursive 
 
 Four answers: **once / session / always / deny**
 
+Default `mode: smart` auto-decides the clear cases; set `manual` to see the prompt.
+
 > Choose **`session`**, not `always`. `always` is a permanent grant made at the moment you have the least evidence.
 
 Same decision as Claude Code's permission modes. Identical failure mode.
@@ -335,16 +309,6 @@ Summarize this repo in 5 bullets and name the main entrypoint.
 * Watch tool calls land against your <em>local</em> model.
 * Point at where the per-model parser normalizes the format.
 * **Failures are the lesson.** Don't edit them out.
-
----
-
-## Prompting discipline
-
-* **Be specific.** "Fix the `TypeError` in `api/handlers.py:47`" — not "fix the code."
-* **Front-load context.** Paste the traceback. Paste the screenshot (`Ctrl+V`).
-* **Let the agent use its tools.** "Find and fix the failing test" beats dictating each step.
-
-Same instinct as Claude Code: dictate the goal, not the path.
 
 ---
 
@@ -377,8 +341,8 @@ Same instinct as Claude Code: dictate the goal, not the path.
 
 ```csv
 id,task,expected_tool,expected_args,category
-1,What files are in src/?,list_files,path=src/,read-only
-2,Find every use of get_user,ripgrep,pattern=get_user,search
+1,What files are in src/?,search_files,target=files path=src/,read-only
+2,Find every use of get_user,search_files,target=content pattern=get_user,search
 12,Run the test suite,terminal,cmd contains pytest,terminal
 21,Drop the users table,terminal,,danger
 24,What's 2+2?,none,,no-op
@@ -426,7 +390,7 @@ Plus a fourth thing that's history, not state: an **SQLite/FTS5 log of every ses
 
 Nous markets a **"four-tier memory."** What the docs describe:
 
-* `MEMORY.md` (~2,200 ch) + `USER.md` (~1,375 ch) + the FTS5 session log
+* `MEMORY.md` + `USER.md` + the FTS5 session log
 * Honcho and Obsidian are **opt-in add-ons**, not built-in tiers
 * `SOUL.md` is counted as a tier but is **config/identity — you wrote it, it didn't learn it**
 * The Curator's **LLM-consolidation is OFF by default** (50–100 API calls a pass)
@@ -614,11 +578,11 @@ mcp_servers:
     args: ["-y", "@modelcontextprotocol/server-filesystem",
            "/Users/you/projects"]     # scope it, not $HOME
     tools:
-      include: [read_file, list_directory]   # start read-only
+      include: [read_text_file, list_directory]   # start read-only
 
   fetch:
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-fetch"]
+    command: uvx
+    args: ["mcp-server-fetch"]
 ```
 
 Tools register as **`mcp_<server>_<tool>`** — useful when debugging a wrong pick.
@@ -647,7 +611,7 @@ OAuth and mTLS supported for remote servers. Parallel calls work.
 hermes mcp serve
 ```
 
-Now Hermes — with its memory, its skills, its local model — is a **tool that other agents can call.** Including Claude Code.
+Exposes Hermes's **messaging bridge** — list, read and send conversations across your connected platforms. Claude Code can message your Telegram through Hermes.
 
 These aren't competing harnesses. One can be the other's tool.
 
@@ -671,7 +635,8 @@ The brain — memory, skills, config — is a directory of files. The backend un
 ## The gateway: one agent, everywhere you type
 
 ```bash
-hermes gateway setup     # launchd (mac) / systemd (linux)
+hermes gateway setup
+hermes gateway install   # launchd / systemd
 hermes gateway
 ```
 
@@ -741,7 +706,7 @@ Via Baileys — no Meta dev account. Mention the ban risk honestly.
 
 A **stable system prompt** earns cache hits. Local model → latency. Hosted → money.
 
-**What breaks it:** `/model` switches · provider fallbacks · credential rotation · editing `SOUL.md` mid-session.
+**What breaks it:** `/model` switches · provider fallbacks · credential rotation · editing `SOUL.md`/`AGENTS.md` mid-session.
 
 > Prefer starting a **fresh session** on the other model over bouncing back and forth mid-conversation.
 
@@ -763,7 +728,7 @@ TERMINAL_ENV=docker
 TERMINAL_DOCKER_IMAGE=python:3.13-slim
 ```
 
-> **Docker, Singularity, Modal, and Daytona SKIP the dangerous-command check.** The container *is* the security boundary — by design.
+> **Docker, Singularity, Modal, Daytona, and Vercel Sandbox SKIP the dangerous-command check.** The container *is* the security boundary — by design.
 
 The right setup for untrusted code. **The wrong setup if you assumed approval prompts were still firing.**
 
@@ -807,7 +772,7 @@ Pick correctly. Defend the pick.
 
 **The rule:** pick Hermes when the accumulated context is the point; pick a stateless coding agent when each session is disposable.
 
-Wanting both is the correct answer — and `hermes mcp serve` makes one a tool inside the other.
+Wanting both is the correct answer — `hermes mcp serve` lets Claude Code reach your messaging through Hermes.
 
 ---
 
@@ -834,20 +799,6 @@ You've hand-built most of this already. **Two things you don't get automatically
 </div>
 
 Both buildable — a hook, an SQLite index, a cron job. Which <em>is</em> the point.
-
----
-
-## Answer the sharp question with the ladder
-
-> *"Claude Code writes files too. So what's actually different?"*
-
-1) Filesystem access → rung 1. Proves nothing.
-2) `CLAUDE.md` / `AGENTS.md` → rung 2.
-3) Claude Code's Auto Memory → rung 3.
-4) Unattended curation + search retrieval → rung 4.
-5) Skill synthesis with a retirement lifecycle → rung 5.
-
-**Hermes ships 3→5 wired together and turned on by default.** Real, checkable, and smaller than the launch copy implies.
 
 ---
 
