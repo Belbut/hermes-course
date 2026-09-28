@@ -654,16 +654,12 @@ The capability with no Claude Code equivalent: the agent that holds your memory 
 
 ```bash
 hermes whatsapp          # QR wizard → Linked Devices
-```
 
-```bash
 # ~/.hermes/.env
 WHATSAPP_ENABLED=true
 WHATSAPP_MODE=bot
 WHATSAPP_ALLOWED_USERS=+15551234567
-```
 
-```bash
 chmod 700 ~/.hermes/whatsapp-session   # these are live credentials
 ```
 
