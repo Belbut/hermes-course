@@ -56,6 +56,10 @@ llama-server -m qwen3.5-9b-q4.gguf \
 one for the live demo and tell the room which one you're on — mixing them
 mid-class produces unreproducible failures.
 
+**One-command alternative (v0.21.6+):** `hermes model` → **Local models**
+installs a pinned llama.cpp, recommends a model that fits your machine,
+downloads it and makes it the default. No endpoint to type.
+
 Re-run `hermes model` to confirm the selection, then launch:
 
 ```bash

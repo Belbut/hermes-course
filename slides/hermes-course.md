@@ -221,6 +221,7 @@ hermes --tui
 
 * The official Mac guide points at **llama.cpp** (lower latency, `:8080`) or **omlx/MLX** (higher throughput, `:8000`) behind a Custom endpoint.
 * Ollama works (`OLLAMA_API_KEY`) — it just isn't the doc's Mac path.
+* One-command alternative (v0.21.6+): `hermes model` → **Local models** installs llama.cpp and picks a model that fits.
 * **Pick one server and stick with it.** Mixing them mid-session produces unreproducible failures.
 
 **Claude Code contrast:** you never pick a model *server*, only a model name. Here you own the whole inference stack.
