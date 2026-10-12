@@ -73,6 +73,7 @@ hermes --tui</pre>
 <pre>llama-server -m qwen3.5-9b-q4.gguf -c 131072 \
   --cache-type-k q4_0 --cache-type-v q4_0 --port 8080
 # 8 GB Mac: -c 65536   → http://localhost:8080/v1</pre>
+  <p>One-command alternative (v0.21.6+): <code>hermes model</code> → <b>Local models</b> installs llama.cpp and picks a model that fits.</p>
   <p>Local model "doesn't work"? Suspect the <b>tool-call parser</b> first.</p>
 </section>
 
